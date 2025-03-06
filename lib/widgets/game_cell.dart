@@ -24,52 +24,58 @@ class GameCell extends StatelessWidget {
   Widget build(BuildContext context) {
     final gameProvider = Provider.of<GameProvider>(context);
     final theme = ThemeUtils.getTheme(gameProvider.theme);
+    final size = MediaQuery.of(context).size;
+    final cellSize =
+        size.width > size.height ? size.height * 0.15 : size.width * 0.2;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: theme.cellDecoration,
         child: Center(
-          child: _buildPlayerSymbol(player, theme),
+          child: _buildPlayerSymbol(player, theme, cellSize),
         ),
       ),
     );
   }
 
-  Widget _buildPlayerSymbol(Player player, GameTheme theme) {
+  Widget _buildPlayerSymbol(Player player, GameTheme theme, double cellSize) {
     switch (player) {
       case Player.X:
-        return _buildXSymbol(theme);
+        return _buildXSymbol(theme, cellSize);
       case Player.O:
-        return _buildOSymbol(theme);
+        return _buildOSymbol(theme, cellSize);
       case Player.none:
         return const SizedBox.shrink();
     }
   }
 
-  Widget _buildXSymbol(GameTheme theme) {
+  Widget _buildXSymbol(GameTheme theme, double cellSize) {
+    final lineWidth = cellSize * 0.12;
+    final lineHeight = cellSize * 0.75;
+
     return Stack(
       alignment: Alignment.center,
       children: [
         Transform.rotate(
           angle: 45 * 3.14159 / 180,
           child: Container(
-            width: 10,
-            height: 60,
+            width: lineWidth,
+            height: lineHeight,
             decoration: BoxDecoration(
               color: theme.xColor,
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(lineWidth / 2),
             ),
           ),
         ),
         Transform.rotate(
           angle: -45 * 3.14159 / 180,
           child: Container(
-            width: 10,
-            height: 60,
+            width: lineWidth,
+            height: lineHeight,
             decoration: BoxDecoration(
               color: theme.xColor,
-              borderRadius: BorderRadius.circular(5),
+              borderRadius: BorderRadius.circular(lineWidth / 2),
             ),
           ),
         ),
@@ -80,16 +86,19 @@ class GameCell extends StatelessWidget {
         );
   }
 
-  Widget _buildOSymbol(GameTheme theme) {
+  Widget _buildOSymbol(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.75;
+    final borderWidth = cellSize * 0.12;
+
     return Container(
-      width: 60,
-      height: 60,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         color: Colors.transparent,
         shape: BoxShape.circle,
         border: Border.all(
           color: theme.oColor,
-          width: 10,
+          width: borderWidth,
         ),
       ),
     ).animate().scale(

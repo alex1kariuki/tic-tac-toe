@@ -37,6 +37,9 @@ class _GameBoardState extends State<GameBoard> {
     final gameProvider = Provider.of<GameProvider>(context);
     final gameModel = gameProvider.gameModel;
     final theme = ThemeUtils.getTheme(gameProvider.theme);
+    final size = MediaQuery.of(context).size;
+    final boardSize =
+        size.width > size.height ? size.height * 0.7 : size.width * 0.85;
 
     // Check if game just ended and play appropriate sound
     if (gameModel.gameState != GameState.playing) {
@@ -84,36 +87,40 @@ class _GameBoardState extends State<GameBoard> {
             ),
 
             // Game board
-            Container(
-              decoration: theme.boardDecoration,
-              padding: const EdgeInsets.all(16),
-              child: AspectRatio(
-                aspectRatio: 1,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: theme.boardColor,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: GridView.builder(
-                    padding: const EdgeInsets.all(8),
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
+            SizedBox(
+              width: boardSize,
+              height: boardSize,
+              child: Container(
+                decoration: theme.boardDecoration,
+                padding: const EdgeInsets.all(16),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: theme.boardColor,
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    itemCount: 9,
-                    itemBuilder: (context, index) {
-                      final row = index ~/ 3;
-                      final col = index % 3;
-                      return GameCell(
-                        row: row,
-                        col: col,
-                        player: gameModel.board[row][col],
-                        onTap: () => _handleCellTap(gameProvider, row, col),
-                      );
-                    },
+                    child: GridView.builder(
+                      padding: const EdgeInsets.all(8),
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                      ),
+                      itemCount: 9,
+                      itemBuilder: (context, index) {
+                        final row = index ~/ 3;
+                        final col = index % 3;
+                        return GameCell(
+                          row: row,
+                          col: col,
+                          player: gameModel.board[row][col],
+                          onTap: () => _handleCellTap(gameProvider, row, col),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),

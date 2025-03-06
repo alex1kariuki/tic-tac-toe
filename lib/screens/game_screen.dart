@@ -18,21 +18,8 @@ class GameScreen extends StatefulWidget {
   State<GameScreen> createState() => _GameScreenState();
 }
 
-class _GameScreenState extends State<GameScreen>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+class _GameScreenState extends State<GameScreen> {
+  int _selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +36,7 @@ class _GameScreenState extends State<GameScreen>
         backgroundColor: theme.boardColor,
         foregroundColor: theme.textColor,
         actions: [
+          _buildGameModeIndicator(gameProvider, theme),
           IconButton(
             icon: const Icon(Icons.history),
             onPressed: () {
@@ -65,28 +53,37 @@ class _GameScreenState extends State<GameScreen>
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: theme.buttonColor,
-          labelColor: theme.buttonColor,
-          unselectedLabelColor: theme.textColor.withOpacity(0.7),
-          tabs: const [
-            Tab(text: 'Game', icon: Icon(Icons.gamepad)),
-            Tab(text: 'Settings', icon: Icon(Icons.settings)),
-          ],
-          onTap: (_) {
-            SoundUtils.playMenuSound(
-              haptic: gameProvider.hapticEnabled,
-              soundEnabled: gameProvider.soundEnabled,
-            );
-          },
-        ),
       ),
-      body: TabBarView(
-        controller: _tabController,
+      body: IndexedStack(
+        index: _selectedIndex,
         children: [
           _buildGameTab(gameProvider, theme),
           _buildSettingsTab(theme),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          SoundUtils.playMenuSound(
+            haptic: gameProvider.hapticEnabled,
+            soundEnabled: gameProvider.soundEnabled,
+          );
+        },
+        backgroundColor: theme.boardColor,
+        selectedItemColor: theme.buttonColor,
+        unselectedItemColor: theme.textColor.withOpacity(0.7),
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.gamepad),
+            label: 'Game',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
         ],
       ),
     );
@@ -103,9 +100,6 @@ class _GameScreenState extends State<GameScreen>
 
             // Game board
             const GameBoard(),
-
-            // Game mode indicator
-            _buildGameModeIndicator(gameProvider, theme),
           ],
         ),
       ),
@@ -125,7 +119,7 @@ class _GameScreenState extends State<GameScreen>
 
     switch (gameProvider.gameModel.gameMode) {
       case GameMode.playerVsPlayer:
-        modeText = 'Player vs Player';
+        modeText = 'PvP';
         modeIcon = Icons.people;
         break;
       case GameMode.easyAI:
@@ -143,11 +137,11 @@ class _GameScreenState extends State<GameScreen>
     }
 
     return Container(
-      margin: const EdgeInsets.only(top: 16),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.only(right: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: theme.boardColor.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(20),
+        color: theme.buttonColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -157,12 +151,13 @@ class _GameScreenState extends State<GameScreen>
             size: 16,
             color: theme.buttonColor,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 4),
           Text(
             modeText,
             style: theme.bodyStyle.copyWith(
               color: theme.buttonColor,
               fontWeight: FontWeight.bold,
+              fontSize: 12,
             ),
           ),
         ],

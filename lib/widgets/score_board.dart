@@ -13,10 +13,12 @@ class ScoreBoard extends StatelessWidget {
     final gameProvider = Provider.of<GameProvider>(context);
     final gameModel = gameProvider.gameModel;
     final theme = ThemeUtils.getTheme(gameProvider.theme);
+    final size = MediaQuery.of(context).size;
+    final isSmallScreen = size.height < 700;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.symmetric(vertical: isSmallScreen ? 8 : 16),
+      padding: EdgeInsets.all(isSmallScreen ? 8 : 16),
       decoration: BoxDecoration(
         color: theme.boardColor.withOpacity(0.8),
         borderRadius: BorderRadius.circular(16),
@@ -31,9 +33,9 @@ class ScoreBoard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildScoreItem('X', gameModel.xScore, theme.xColor, theme),
-          _buildScoreItem('Draws', gameModel.draws, theme.textColor, theme),
-          _buildScoreItem('O', gameModel.oScore, theme.oColor, theme),
+          _buildScoreItem('X', gameModel.xScore, theme.xColor, theme, isSmallScreen),
+          _buildScoreItem('Draws', gameModel.draws, theme.textColor, theme, isSmallScreen),
+          _buildScoreItem('O', gameModel.oScore, theme.oColor, theme, isSmallScreen),
         ],
       ),
     ).animate().fadeIn(duration: 600.ms).slideY(
@@ -45,7 +47,11 @@ class ScoreBoard extends StatelessWidget {
   }
 
   Widget _buildScoreItem(
-      String label, int score, Color color, GameTheme theme) {
+      String label, int score, Color color, GameTheme theme, bool isSmallScreen) {
+    final itemSize = isSmallScreen ? 45.0 : 60.0;
+    final fontSize = isSmallScreen ? 14.0 : 16.0;
+    final scoreFontSize = isSmallScreen ? 18.0 : 20.0;
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -54,12 +60,13 @@ class ScoreBoard extends StatelessWidget {
           style: theme.bodyStyle.copyWith(
             color: color,
             fontWeight: FontWeight.bold,
+            fontSize: fontSize,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: isSmallScreen ? 4 : 8),
         Container(
-          width: 60,
-          height: 60,
+          width: itemSize,
+          height: itemSize,
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             shape: BoxShape.circle,
@@ -73,6 +80,7 @@ class ScoreBoard extends StatelessWidget {
               score.toString(),
               style: theme.scoreStyle.copyWith(
                 color: color,
+                fontSize: scoreFontSize,
               ),
             ),
           ),
