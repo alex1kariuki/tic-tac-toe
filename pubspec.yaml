@@ -1,5 +1,5 @@
 name: tictactoe
-description: "A new Flutter project."
+description: "A compelling Tic Tac Toe game for Android and iOS."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -34,6 +34,25 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  
+  # Audio for game sounds
+  audioplayers: ^5.2.1
+  
+  # Animations
+  flutter_animate: ^4.5.0
+  
+  # State management
+  provider: ^6.1.1
+  
+  # Local storage for game history and settings
+  shared_preferences: ^2.2.2
+  
+  # Confetti effect for win celebrations
+  confetti: ^0.7.0
+  
+  # Icons and fonts
+  font_awesome_flutter: ^10.7.0
+  google_fonts: ^6.2.0
 
 dev_dependencies:
   flutter_test:
@@ -58,7 +77,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  assets:
+    - lib/assets/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
