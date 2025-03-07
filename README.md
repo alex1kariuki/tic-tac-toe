@@ -2,9 +2,9 @@
 
 A modern, feature-rich Tic Tac Toe game built with Flutter for multiple platforms.
 
-[![Available on Android](https://img.shields.io/badge/Available%20on-Android-brightgreen.svg)](https://github.com/yourusername/tictactoe)
-[![Available on iOS](https://img.shields.io/badge/Available%20on-iOS-blue.svg)](https://github.com/yourusername/tictactoe)
-[![Available on Web](https://img.shields.io/badge/Available%20on-Web-orange.svg)](https://github.com/yourusername/tictactoe)
+[![Available on Android](https://img.shields.io/badge/Available%20on-Android-brightgreen.svg)](https://github.com/alex1kariuki/tictactoe)
+[![Available on iOS](https://img.shields.io/badge/Available%20on-iOS-blue.svg)](https://github.com/alex1kariuki/tictactoe)
+[![Available on Web](https://img.shields.io/badge/Available%20on-Web-orange.svg)](https://github.com/alex1kariuki/tictactoe)
 
 ## Features
 
@@ -89,7 +89,7 @@ A modern, feature-rich Tic Tac Toe game built with Flutter for multiple platform
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/tictactoe.git
+git clone https://github.com/alex1kariuki/tictactoe.git
 ```
 
 2. Navigate to the project directory
