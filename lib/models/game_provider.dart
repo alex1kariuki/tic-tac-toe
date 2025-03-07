@@ -35,6 +35,10 @@ class GameProvider extends ChangeNotifier {
     final gameModeString = prefs.getString('gameMode') ?? 'playerVsPlayer';
     _gameModel.gameMode = _stringToGameMode(gameModeString);
 
+    // Load player symbol
+    final playerSymbolString = prefs.getString('playerSymbol') ?? 'classic';
+    _gameModel.playerSymbol = _stringToPlayerSymbol(playerSymbolString);
+
     notifyListeners();
   }
 
@@ -64,6 +68,8 @@ class GameProvider extends ChangeNotifier {
     await prefs.setBool('hapticEnabled', _hapticEnabled);
     await prefs.setString('theme', _theme);
     await prefs.setString('gameMode', _gameModeToString(_gameModel.gameMode));
+    await prefs.setString(
+        'playerSymbol', _playerSymbolToString(_gameModel.playerSymbol));
   }
 
   // Save game history
@@ -106,6 +112,37 @@ class GameProvider extends ChangeNotifier {
         return GameMode.hardAI;
       default:
         return GameMode.playerVsPlayer;
+    }
+  }
+
+  // Helper methods for player symbol conversion
+  String _playerSymbolToString(PlayerSymbol symbol) {
+    switch (symbol) {
+      case PlayerSymbol.classic:
+        return 'classic';
+      case PlayerSymbol.heart:
+        return 'heart';
+      case PlayerSymbol.star:
+        return 'star';
+      case PlayerSymbol.diamond:
+        return 'diamond';
+      default:
+        return 'classic';
+    }
+  }
+
+  PlayerSymbol _stringToPlayerSymbol(String symbol) {
+    switch (symbol) {
+      case 'classic':
+        return PlayerSymbol.classic;
+      case 'heart':
+        return PlayerSymbol.heart;
+      case 'star':
+        return PlayerSymbol.star;
+      case 'diamond':
+        return PlayerSymbol.diamond;
+      default:
+        return PlayerSymbol.classic;
     }
   }
 
@@ -175,6 +212,13 @@ class GameProvider extends ChangeNotifier {
   // Set game mode
   void setGameMode(GameMode mode) {
     _gameModel.gameMode = mode;
+    _saveSettings();
+    notifyListeners();
+  }
+
+  // Set player symbol
+  void setPlayerSymbol(PlayerSymbol symbol) {
+    _gameModel.playerSymbol = symbol;
     _saveSettings();
     notifyListeners();
   }

@@ -46,6 +46,10 @@ class ThemeUtils {
         return _minimalistTheme();
       case 'dark':
         return _darkTheme();
+      case 'cosmic':
+        return _cosmicTheme();
+      case 'retro':
+        return _retroTheme();
       default:
         return _classicTheme();
     }
@@ -258,6 +262,145 @@ class ThemeUtils {
             color: Colors.black.withOpacity(0.4),
             blurRadius: 10,
             offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static GameTheme _cosmicTheme() {
+    return GameTheme(
+      backgroundColor: const Color(0xFF0B0E2D),
+      boardColor: const Color(0xFF1A1F4B),
+      gridLineColor: const Color(0xFF5D5FEF),
+      xColor: const Color(0xFFFF6B6B),
+      oColor: const Color(0xFF48DBFB),
+      textColor: Colors.white,
+      buttonColor: const Color(0xFFFF9FF3),
+      buttonTextColor: const Color(0xFF0B0E2D),
+      winLineColor: const Color(0xFFFECA57),
+      titleStyle: GoogleFonts.exo2(
+        fontSize: 28,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        shadows: [
+          Shadow(
+            color: const Color(0xFFFF9FF3).withOpacity(0.6),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      bodyStyle: GoogleFonts.exo2(
+        fontSize: 16,
+        color: Colors.white,
+      ),
+      scoreStyle: GoogleFonts.exo2(
+        fontSize: 20,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+        shadows: [
+          Shadow(
+            color: const Color(0xFFFF9FF3).withOpacity(0.6),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      cellDecoration: BoxDecoration(
+        color: const Color(0xFF1A1F4B),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: const Color(0xFF5D5FEF),
+          width: 1.5,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF5D5FEF).withOpacity(0.3),
+            blurRadius: 8,
+            spreadRadius: 1,
+          ),
+        ],
+      ),
+      boardDecoration: BoxDecoration(
+        color: const Color(0xFF1A1F4B),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFF5D5FEF),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF5D5FEF).withOpacity(0.4),
+            blurRadius: 15,
+            spreadRadius: 2,
+          ),
+        ],
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color(0xFF1A1F4B),
+            Color(0xFF2C3364),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static GameTheme _retroTheme() {
+    return GameTheme(
+      backgroundColor: const Color(0xFFFDF6E3),
+      boardColor: const Color(0xFFE8E0D0),
+      gridLineColor: const Color(0xFF8B7355),
+      xColor: const Color(0xFFD35400),
+      oColor: const Color(0xFF27AE60),
+      textColor: const Color(0xFF4A4A4A),
+      buttonColor: const Color(0xFFD35400),
+      buttonTextColor: Colors.white,
+      winLineColor: const Color(0xFF8E44AD),
+      titleStyle: GoogleFonts.vt323(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: const Color(0xFF4A4A4A),
+        letterSpacing: 1.5,
+      ),
+      bodyStyle: GoogleFonts.vt323(
+        fontSize: 18,
+        color: const Color(0xFF4A4A4A),
+        letterSpacing: 1,
+      ),
+      scoreStyle: GoogleFonts.vt323(
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+        color: const Color(0xFF4A4A4A),
+        letterSpacing: 1,
+      ),
+      cellDecoration: BoxDecoration(
+        color: const Color(0xFFE8E0D0),
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(
+          color: const Color(0xFF8B7355),
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8B7355).withOpacity(0.3),
+            blurRadius: 2,
+            offset: const Offset(2, 2),
+          ),
+        ],
+      ),
+      boardDecoration: BoxDecoration(
+        color: const Color(0xFFE8E0D0),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: const Color(0xFF8B7355),
+          width: 4,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF8B7355).withOpacity(0.4),
+            blurRadius: 5,
+            offset: const Offset(4, 4),
           ),
         ],
       ),
