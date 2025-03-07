@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 class SoundUtils {
   static final AudioPlayer _audioPlayer = AudioPlayer();
+  static bool _assetsExist = false;
 
   // Sound effects
   static const String _tapSound = 'tap.mp3';
@@ -13,8 +14,14 @@ class SoundUtils {
 
   // Initialize sound assets
   static Future<void> preloadSounds() async {
-    // This would be implemented if we had actual sound files
-    // For now, we'll just return
+    // Check if assets exist - we'll skip playing sounds if they don't
+    try {
+      await rootBundle.load('lib/assets/$_tapSound');
+      _assetsExist = true;
+    } catch (e) {
+      _assetsExist = false;
+      print('Sound assets not found. Sound will be disabled.');
+    }
     return;
   }
 
@@ -25,12 +32,11 @@ class SoundUtils {
       HapticFeedback.selectionClick();
     }
 
-    if (soundEnabled) {
+    if (soundEnabled && _assetsExist) {
       try {
         await _audioPlayer.play(AssetSource(_tapSound));
       } catch (e) {
-        // Handle error or use fallback sound
-        print('Error playing tap sound: $e');
+        // Handle error silently
       }
     }
   }
@@ -42,12 +48,11 @@ class SoundUtils {
       HapticFeedback.heavyImpact();
     }
 
-    if (soundEnabled) {
+    if (soundEnabled && _assetsExist) {
       try {
         await _audioPlayer.play(AssetSource(_winSound));
       } catch (e) {
-        // Handle error or use fallback sound
-        print('Error playing win sound: $e');
+        // Handle error silently
       }
     }
   }
@@ -59,12 +64,11 @@ class SoundUtils {
       HapticFeedback.mediumImpact();
     }
 
-    if (soundEnabled) {
+    if (soundEnabled && _assetsExist) {
       try {
         await _audioPlayer.play(AssetSource(_drawSound));
       } catch (e) {
-        // Handle error or use fallback sound
-        print('Error playing draw sound: $e');
+        // Handle error silently
       }
     }
   }
@@ -76,12 +80,11 @@ class SoundUtils {
       HapticFeedback.vibrate();
     }
 
-    if (soundEnabled) {
+    if (soundEnabled && _assetsExist) {
       try {
         await _audioPlayer.play(AssetSource(_errorSound));
       } catch (e) {
-        // Handle error or use fallback sound
-        print('Error playing error sound: $e');
+        // Handle error silently
       }
     }
   }
@@ -93,12 +96,11 @@ class SoundUtils {
       HapticFeedback.lightImpact();
     }
 
-    if (soundEnabled) {
+    if (soundEnabled && _assetsExist) {
       try {
         await _audioPlayer.play(AssetSource(_menuSound));
       } catch (e) {
-        // Handle error or use fallback sound
-        print('Error playing menu sound: $e');
+        // Handle error silently
       }
     }
   }
