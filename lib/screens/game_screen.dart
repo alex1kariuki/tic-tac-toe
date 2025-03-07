@@ -162,6 +162,6 @@ class _GameScreenState extends State<GameScreen> {
           ),
         ],
       ),
-    ).animate().fadeIn(duration: 300.ms);
+    );
   }
 }
