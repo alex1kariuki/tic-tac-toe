@@ -6,6 +6,8 @@ enum GameMode { playerVsPlayer, easyAI, mediumAI, hardAI }
 
 enum GameState { playing, draw, xWon, oWon }
 
+enum PlayerSymbol { classic, heart, star, diamond }
+
 class GameModel {
   // Game board represented as a 3x3 grid
   List<List<Player>> board = List.generate(
@@ -21,6 +23,9 @@ class GameModel {
 
   // Game state
   GameState gameState = GameState.playing;
+
+  // Player symbols
+  PlayerSymbol playerSymbol = PlayerSymbol.classic;
 
   // Move history for undo functionality
   List<Map<String, dynamic>> moveHistory = [];

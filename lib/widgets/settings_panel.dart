@@ -47,6 +47,15 @@ class SettingsPanel extends StatelessWidget {
           _buildGameModeSelector(gameProvider, theme),
           const SizedBox(height: 16),
 
+          // Player symbol selection
+          Text(
+            'Player Symbols',
+            style: theme.bodyStyle.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          _buildPlayerSymbolSelector(gameProvider, theme),
+          const SizedBox(height: 16),
+
           // Theme selection
           Text(
             'Theme',
@@ -169,6 +178,112 @@ class SettingsPanel extends StatelessWidget {
     );
   }
 
+  Widget _buildPlayerSymbolSelector(
+      GameProvider gameProvider, GameTheme theme) {
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.backgroundColor,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        children: [
+          _buildPlayerSymbolOption(
+            'Classic',
+            PlayerSymbol.classic,
+            gameProvider,
+            theme,
+            xIcon: Icons.close,
+            oIcon: Icons.circle_outlined,
+          ),
+          _buildDivider(theme),
+          _buildPlayerSymbolOption(
+            'Hearts',
+            PlayerSymbol.heart,
+            gameProvider,
+            theme,
+            xIcon: Icons.favorite,
+            oIcon: Icons.favorite_border,
+          ),
+          _buildDivider(theme),
+          _buildPlayerSymbolOption(
+            'Stars',
+            PlayerSymbol.star,
+            gameProvider,
+            theme,
+            xIcon: Icons.star,
+            oIcon: Icons.star_border,
+          ),
+          _buildDivider(theme),
+          _buildPlayerSymbolOption(
+            'Diamonds',
+            PlayerSymbol.diamond,
+            gameProvider,
+            theme,
+            xIcon: Icons.diamond,
+            oIcon: Icons.diamond_outlined,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPlayerSymbolOption(
+    String label,
+    PlayerSymbol symbol,
+    GameProvider gameProvider,
+    GameTheme theme, {
+    required IconData xIcon,
+    required IconData oIcon,
+  }) {
+    final isSelected = gameProvider.gameModel.playerSymbol == symbol;
+
+    return InkWell(
+      onTap: () {
+        if (!isSelected) {
+          SoundUtils.playMenuSound(
+            haptic: gameProvider.hapticEnabled,
+            soundEnabled: gameProvider.soundEnabled,
+          );
+          gameProvider.setPlayerSymbol(symbol);
+        }
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(
+              xIcon,
+              size: 16,
+              color: theme.xColor,
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              oIcon,
+              size: 16,
+              color: theme.oColor,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                label,
+                style: theme.bodyStyle.copyWith(
+                  color: isSelected ? theme.buttonColor : theme.textColor,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check_circle,
+                color: theme.buttonColor,
+                size: 20,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildGameModeOption(
     String label,
     GameMode mode,
@@ -239,6 +354,8 @@ class SettingsPanel extends StatelessWidget {
           _buildThemeOption('neon', 'Neon', gameProvider, theme),
           _buildThemeOption('minimalist', 'Minimal', gameProvider, theme),
           _buildThemeOption('dark', 'Dark', gameProvider, theme),
+          _buildThemeOption('cosmic', 'Cosmic', gameProvider, theme),
+          _buildThemeOption('retro', 'Retro', gameProvider, theme),
         ],
       ),
     );

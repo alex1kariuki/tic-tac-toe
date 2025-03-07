@@ -33,24 +33,59 @@ class GameCell extends StatelessWidget {
       child: Container(
         decoration: theme.cellDecoration,
         child: Center(
-          child: _buildPlayerSymbol(player, theme, cellSize),
+          child: _buildPlayerSymbol(
+              player, theme, cellSize, gameProvider.gameModel.playerSymbol),
         ),
       ),
     );
   }
 
-  Widget _buildPlayerSymbol(Player player, GameTheme theme, double cellSize) {
+  Widget _buildPlayerSymbol(Player player, GameTheme theme, double cellSize,
+      PlayerSymbol symbolType) {
     switch (player) {
       case Player.X:
-        return _buildXSymbol(theme, cellSize);
+        return _buildXSymbol(theme, cellSize, symbolType);
       case Player.O:
-        return _buildOSymbol(theme, cellSize);
+        return _buildOSymbol(theme, cellSize, symbolType);
       case Player.none:
         return const SizedBox.shrink();
     }
   }
 
-  Widget _buildXSymbol(GameTheme theme, double cellSize) {
+  Widget _buildXSymbol(
+      GameTheme theme, double cellSize, PlayerSymbol symbolType) {
+    switch (symbolType) {
+      case PlayerSymbol.classic:
+        return _buildClassicX(theme, cellSize);
+      case PlayerSymbol.heart:
+        return _buildHeartX(theme, cellSize);
+      case PlayerSymbol.star:
+        return _buildStarX(theme, cellSize);
+      case PlayerSymbol.diamond:
+        return _buildDiamondX(theme, cellSize);
+      default:
+        return _buildClassicX(theme, cellSize);
+    }
+  }
+
+  Widget _buildOSymbol(
+      GameTheme theme, double cellSize, PlayerSymbol symbolType) {
+    switch (symbolType) {
+      case PlayerSymbol.classic:
+        return _buildClassicO(theme, cellSize);
+      case PlayerSymbol.heart:
+        return _buildHeartO(theme, cellSize);
+      case PlayerSymbol.star:
+        return _buildStarO(theme, cellSize);
+      case PlayerSymbol.diamond:
+        return _buildDiamondO(theme, cellSize);
+      default:
+        return _buildClassicO(theme, cellSize);
+    }
+  }
+
+  // Classic X symbol (two crossed lines)
+  Widget _buildClassicX(GameTheme theme, double cellSize) {
     final lineWidth = cellSize * 0.12;
     final lineHeight = cellSize * 0.75;
 
@@ -86,7 +121,8 @@ class GameCell extends StatelessWidget {
         );
   }
 
-  Widget _buildOSymbol(GameTheme theme, double cellSize) {
+  // Classic O symbol (circle)
+  Widget _buildClassicO(GameTheme theme, double cellSize) {
     final size = cellSize * 0.75;
     final borderWidth = cellSize * 0.12;
 
@@ -101,6 +137,90 @@ class GameCell extends StatelessWidget {
           width: borderWidth,
         ),
       ),
+    ).animate().scale(
+          duration: 300.ms,
+          curve: Curves.elasticOut,
+        );
+  }
+
+  // Heart X symbol
+  Widget _buildHeartX(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.7;
+
+    return Icon(
+      Icons.favorite,
+      size: size,
+      color: theme.xColor,
+    ).animate().scale(
+          duration: 300.ms,
+          curve: Curves.elasticOut,
+        );
+  }
+
+  // Heart O symbol
+  Widget _buildHeartO(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.7;
+
+    return Icon(
+      Icons.favorite_border,
+      size: size,
+      color: theme.oColor,
+    ).animate().scale(
+          duration: 300.ms,
+          curve: Curves.elasticOut,
+        );
+  }
+
+  // Star X symbol
+  Widget _buildStarX(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.7;
+
+    return Icon(
+      Icons.star,
+      size: size,
+      color: theme.xColor,
+    ).animate().scale(
+          duration: 300.ms,
+          curve: Curves.elasticOut,
+        );
+  }
+
+  // Star O symbol
+  Widget _buildStarO(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.7;
+
+    return Icon(
+      Icons.star_border,
+      size: size,
+      color: theme.oColor,
+    ).animate().scale(
+          duration: 300.ms,
+          curve: Curves.elasticOut,
+        );
+  }
+
+  // Diamond X symbol
+  Widget _buildDiamondX(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.7;
+
+    return Icon(
+      Icons.diamond,
+      size: size,
+      color: theme.xColor,
+    ).animate().scale(
+          duration: 300.ms,
+          curve: Curves.elasticOut,
+        );
+  }
+
+  // Diamond O symbol
+  Widget _buildDiamondO(GameTheme theme, double cellSize) {
+    final size = cellSize * 0.7;
+
+    return Icon(
+      Icons.diamond_outlined,
+      size: size,
+      color: theme.oColor,
     ).animate().scale(
           duration: 300.ms,
           curve: Curves.elasticOut,
