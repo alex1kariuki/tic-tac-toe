@@ -21,37 +21,15 @@ A modern, feature-rich Tic Tac Toe game built with Flutter for multiple platform
 
 ## Screenshots
 
-### Android
+### Android & iOS
 
 <table>
   <tr>
-    <td><img src="screenshots/android_classic.png" alt="Android Classic Theme" width="200"/></td>
-    <td><img src="screenshots/android_neon.png" alt="Android Neon Theme" width="200"/></td>
-    <td><img src="screenshots/android_minimalist.png" alt="Android Minimalist Theme" width="200"/></td>
-    <td><img src="screenshots/android_dark.png" alt="Android Dark Theme" width="200"/></td>
-  </tr>
-  <tr>
-    <td align="center">Classic Theme</td>
-    <td align="center">Neon Theme</td>
-    <td align="center">Minimalist Theme</td>
-    <td align="center">Dark Theme</td>
-  </tr>
-</table>
-
-### iOS
-
-<table>
-  <tr>
-    <td><img src="screenshots/ios_classic.png" alt="iOS Classic Theme" width="200"/></td>
-    <td><img src="screenshots/ios_neon.png" alt="iOS Neon Theme" width="200"/></td>
-    <td><img src="screenshots/ios_minimalist.png" alt="iOS Minimalist Theme" width="200"/></td>
-    <td><img src="screenshots/ios_dark.png" alt="iOS Dark Theme" width="200"/></td>
-  </tr>
-  <tr>
-    <td align="center">Classic Theme</td>
-    <td align="center">Neon Theme</td>
-    <td align="center">Minimalist Theme</td>
-    <td align="center">Dark Theme</td>
+    <td><img src="https://github.com/user-attachments/assets/6f8a3c11-f368-45be-9abc-c0aad9bca441"  width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/72bd28bc-a4cc-4cdf-a722-c9ff1646e1f7"  width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/3756e55a-dfc5-4c34-98cd-462054c7f702"  width="200"/></td>
+    <td><img src="https://github.com/user-attachments/assets/ace7aaf4-beba-4ade-b6c0-4b3b556949bd"  width="200"/></td>
+<td><img src="https://github.com/user-attachments/assets/d4aa6609-c5a2-499c-95c8-071132756d09"  width="200"/></td>
   </tr>
 </table>
 
@@ -59,20 +37,9 @@ A modern, feature-rich Tic Tac Toe game built with Flutter for multiple platform
 
 <table>
   <tr>
-    <td><img src="screenshots/web_classic.png" alt="Web Classic Theme" width="400"/></td>
-    <td><img src="screenshots/web_neon.png" alt="Web Neon Theme" width="400"/></td>
-  </tr>
-  <tr>
-    <td align="center">Classic Theme</td>
-    <td align="center">Neon Theme</td>
-  </tr>
-  <tr>
-    <td><img src="screenshots/web_minimalist.png" alt="Web Minimalist Theme" width="400"/></td>
-    <td><img src="screenshots/web_dark.png" alt="Web Dark Theme" width="400"/></td>
-  </tr>
-  <tr>
-    <td align="center">Minimalist Theme</td>
-    <td align="center">Dark Theme</td>
+    <td><img src="https://github.com/user-attachments/assets/23a33359-dec9-440f-96e3-5d3bd99c3dd8" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/adcfe661-e356-47ef-9bf0-48fe2c110825" width="400"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e8b8f5c7-a8b4-443e-ab53-df463619bf0d" width="400"/></td>
   </tr>
 </table>
 
