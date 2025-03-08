@@ -6,21 +6,22 @@ class SoundUtils {
   static bool _assetsExist = false;
 
   // Sound effects
-  static const String _tapSound = 'tap.mp3';
-  static const String _winSound = 'win.mp3';
-  static const String _drawSound = 'draw.mp3';
-  static const String _errorSound = 'error.mp3';
-  static const String _menuSound = 'menu.mp3';
+  static const String _tapSound = 'lib/assets/tap.mp3';
+  static const String _winSound = 'lib/assets/win.mp3';
+  static const String _drawSound = 'lib/assets/draw.mp3';
+  static const String _errorSound = 'lib/assets/error.mp3';
+  static const String _menuSound = 'lib/assets/menu.mp3';
 
   // Initialize sound assets
   static Future<void> preloadSounds() async {
     // Check if assets exist - we'll skip playing sounds if they don't
     try {
-      await rootBundle.load('lib/assets/$_tapSound');
+      await rootBundle.load(_tapSound);
       _assetsExist = true;
+      print('Sound assets loaded successfully.');
     } catch (e) {
       _assetsExist = false;
-      print('Sound assets not found. Sound will be disabled.');
+      print('Sound assets not found. Sound will be disabled. Error: $e');
     }
     return;
   }
@@ -36,7 +37,7 @@ class SoundUtils {
       try {
         await _audioPlayer.play(AssetSource(_tapSound));
       } catch (e) {
-        // Handle error silently
+        print('Error playing tap sound: $e');
       }
     }
   }
@@ -52,7 +53,7 @@ class SoundUtils {
       try {
         await _audioPlayer.play(AssetSource(_winSound));
       } catch (e) {
-        // Handle error silently
+        print('Error playing win sound: $e');
       }
     }
   }
@@ -68,7 +69,7 @@ class SoundUtils {
       try {
         await _audioPlayer.play(AssetSource(_drawSound));
       } catch (e) {
-        // Handle error silently
+        print('Error playing draw sound: $e');
       }
     }
   }
@@ -84,7 +85,7 @@ class SoundUtils {
       try {
         await _audioPlayer.play(AssetSource(_errorSound));
       } catch (e) {
-        // Handle error silently
+        print('Error playing error sound: $e');
       }
     }
   }
@@ -100,7 +101,7 @@ class SoundUtils {
       try {
         await _audioPlayer.play(AssetSource(_menuSound));
       } catch (e) {
-        // Handle error silently
+        print('Error playing menu sound: $e');
       }
     }
   }
