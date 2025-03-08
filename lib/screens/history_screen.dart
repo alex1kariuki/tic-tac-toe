@@ -76,20 +76,70 @@ class HistoryScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       itemCount: history.length,
       itemBuilder: (context, index) {
-        // Display most recent games first
-        final gameData = history[history.length - 1 - index];
-        return _buildHistoryItem(gameData, theme, index);
+        try {
+          // Display most recent games first
+          final gameData = history[history.length - 1 - index];
+          return _buildHistoryItem(gameData, theme, index);
+        } catch (e) {
+          // Handle any errors by displaying a placeholder item
+          return _buildErrorHistoryItem(theme, index);
+        }
       },
+    );
+  }
+
+  Widget _buildErrorHistoryItem(GameTheme theme, int index) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      color: theme.boardColor,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        leading: CircleAvatar(
+          backgroundColor: theme.textColor.withOpacity(0.2),
+          child: Icon(
+            Icons.error_outline,
+            color: theme.textColor,
+          ),
+        ),
+        title: Text(
+          'Game Record ${index + 1}',
+          style: theme.bodyStyle.copyWith(
+            fontWeight: FontWeight.bold,
+            color: theme.textColor,
+          ),
+        ),
+        subtitle: Text(
+          'Unable to load game details',
+          style: theme.bodyStyle.copyWith(
+            fontSize: 12,
+            color: theme.textColor.withOpacity(0.7),
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildHistoryItem(
       Map<String, dynamic> gameData, GameTheme theme, int index) {
-    final date = DateTime.parse(gameData['date'] ?? DateTime.now().toString());
-    final formattedDate =
-        '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    // Safely parse date with fallback
+    DateTime date;
+    String formattedDate;
+    try {
+      date = DateTime.parse(gameData['date'] ?? DateTime.now().toString());
+      formattedDate =
+          '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
+    } catch (e) {
+      formattedDate = 'Unknown date';
+    }
+
     final result = gameData['result'] ?? 'Unknown';
     final gameMode = gameData['gameMode'] ?? 'Unknown';
+    final xScore = gameData['xScore'] ?? '0';
+    final oScore = gameData['oScore'] ?? '0';
 
     Color resultColor;
     IconData resultIcon;
@@ -171,7 +221,7 @@ class HistoryScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Text(
-              'X: ${gameData['xScore'] ?? '0'}',
+              'X: $xScore',
               style: theme.bodyStyle.copyWith(
                 color: theme.xColor,
                 fontWeight: FontWeight.bold,
@@ -180,7 +230,7 @@ class HistoryScreen extends StatelessWidget {
             ),
             const SizedBox(height: 4),
             Text(
-              'O: ${gameData['oScore'] ?? '0'}',
+              'O: $oScore',
               style: theme.bodyStyle.copyWith(
                 color: theme.oColor,
                 fontWeight: FontWeight.bold,

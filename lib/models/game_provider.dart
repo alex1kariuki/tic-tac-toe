@@ -26,62 +26,98 @@ class GameProvider extends ChangeNotifier {
 
   // Load settings from shared preferences
   Future<void> _loadSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    _soundEnabled = prefs.getBool('soundEnabled') ?? true;
-    _hapticEnabled = prefs.getBool('hapticEnabled') ?? true;
-    _theme = prefs.getString('theme') ?? 'classic';
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _soundEnabled = prefs.getBool('soundEnabled') ?? true;
+      _hapticEnabled = prefs.getBool('hapticEnabled') ?? true;
+      _theme = prefs.getString('theme') ?? 'classic';
 
-    // Load game mode
-    final gameModeString = prefs.getString('gameMode') ?? 'playerVsPlayer';
-    _gameModel.gameMode = _stringToGameMode(gameModeString);
+      // Load game mode
+      final gameModeString = prefs.getString('gameMode') ?? 'playerVsPlayer';
+      _gameModel.gameMode = _stringToGameMode(gameModeString);
 
-    // Load player symbol
-    final playerSymbolString = prefs.getString('playerSymbol') ?? 'classic';
-    _gameModel.playerSymbol = _stringToPlayerSymbol(playerSymbolString);
+      // Load player symbol
+      final playerSymbolString = prefs.getString('playerSymbol') ?? 'classic';
+      _gameModel.playerSymbol = _stringToPlayerSymbol(playerSymbolString);
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      // If there's an error loading settings, use defaults
+      _soundEnabled = true;
+      _hapticEnabled = true;
+      _theme = 'classic';
+      _gameModel.gameMode = GameMode.playerVsPlayer;
+      _gameModel.playerSymbol = PlayerSymbol.classic;
+      notifyListeners();
+    }
   }
 
   // Load game history
   Future<void> _loadGameHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final historyList = prefs.getStringList('gameHistory') ?? [];
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final historyList = prefs.getStringList('gameHistory') ?? [];
 
-    _gameHistory = historyList.map((item) {
-      final Map<String, dynamic> gameData = {};
-      item.split(',').forEach((entry) {
-        final parts = entry.split(':');
-        if (parts.length == 2) {
-          gameData[parts[0]] = parts[1];
+      _gameHistory = [];
+      for (final item in historyList) {
+        try {
+          final Map<String, dynamic> gameData = {};
+          item.split(',').forEach((entry) {
+            final parts = entry.split(':');
+            if (parts.length == 2) {
+              gameData[parts[0]] = parts[1];
+            }
+          });
+
+          // Only add valid entries that have at least a date and result
+          if (gameData.containsKey('date') && gameData.containsKey('result')) {
+            _gameHistory.add(gameData);
+          }
+        } catch (e) {
+          // Skip invalid entries
+          continue;
         }
-      });
-      return gameData;
-    }).toList();
+      }
 
-    notifyListeners();
+      notifyListeners();
+    } catch (e) {
+      // If there's an error loading history, use an empty list
+      _gameHistory = [];
+      notifyListeners();
+    }
   }
 
   // Save settings to shared preferences
   Future<void> _saveSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('soundEnabled', _soundEnabled);
-    await prefs.setBool('hapticEnabled', _hapticEnabled);
-    await prefs.setString('theme', _theme);
-    await prefs.setString('gameMode', _gameModeToString(_gameModel.gameMode));
-    await prefs.setString(
-        'playerSymbol', _playerSymbolToString(_gameModel.playerSymbol));
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('soundEnabled', _soundEnabled);
+      await prefs.setBool('hapticEnabled', _hapticEnabled);
+      await prefs.setString('theme', _theme);
+      await prefs.setString('gameMode', _gameModeToString(_gameModel.gameMode));
+      await prefs.setString(
+          'playerSymbol', _playerSymbolToString(_gameModel.playerSymbol));
+    } catch (e) {
+      // Silently handle save errors
+      print('Error saving settings: $e');
+    }
   }
 
   // Save game history
   Future<void> _saveGameHistory() async {
-    final prefs = await SharedPreferences.getInstance();
-    final historyList = _gameHistory.map((item) {
-      return item.entries
-          .map((entry) => '${entry.key}:${entry.value}')
-          .join(',');
-    }).toList();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final historyList = _gameHistory.map((item) {
+        return item.entries
+            .map((entry) => '${entry.key}:${entry.value}')
+            .join(',');
+      }).toList();
 
-    await prefs.setStringList('gameHistory', historyList);
+      await prefs.setStringList('gameHistory', historyList);
+    } catch (e) {
+      // Silently handle save errors
+      print('Error saving game history: $e');
+    }
   }
 
   // Helper methods for game mode conversion
@@ -162,17 +198,22 @@ class GameProvider extends ChangeNotifier {
 
   // Add current game to history
   void _addGameToHistory() {
-    final gameResult = {
-      'date': DateTime.now().toString(),
-      'gameMode': _gameModeToString(_gameModel.gameMode),
-      'result': _gameStateToString(_gameModel.gameState),
-      'xScore': _gameModel.xScore.toString(),
-      'oScore': _gameModel.oScore.toString(),
-      'draws': _gameModel.draws.toString(),
-    };
+    try {
+      final gameResult = {
+        'date': DateTime.now().toString(),
+        'gameMode': _gameModeToString(_gameModel.gameMode),
+        'result': _gameStateToString(_gameModel.gameState),
+        'xScore': _gameModel.xScore.toString(),
+        'oScore': _gameModel.oScore.toString(),
+        'draws': _gameModel.draws.toString(),
+      };
 
-    _gameHistory.add(gameResult);
-    _saveGameHistory();
+      _gameHistory.add(gameResult);
+      _saveGameHistory();
+    } catch (e) {
+      // Silently handle errors
+      print('Error adding game to history: $e');
+    }
   }
 
   String _gameStateToString(GameState state) {

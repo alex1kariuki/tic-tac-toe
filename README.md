@@ -89,7 +89,7 @@ A modern, feature-rich Tic Tac Toe game built with Flutter for multiple platform
 
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/tictactoe.git
+git clone https://github.com/alex1kariuki/tictactoe.git
 ```
 
 2. Navigate to the project directory
