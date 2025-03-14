@@ -72,16 +72,30 @@ class HistoryScreen extends StatelessWidget {
 
   Widget _buildHistoryList(
       List<Map<String, dynamic>> history, GameTheme theme) {
+    if (history.isEmpty) {
+      return _buildEmptyHistory(theme);
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: history.length,
       itemBuilder: (context, index) {
         try {
-          // Display most recent games first
-          final gameData = history[history.length - 1 - index];
+          if (index < 0 || index >= history.length) {
+            return _buildErrorHistoryItem(theme, index);
+          }
+
+          final gameData = history.length > index
+              ? history[history.length - 1 - index]
+              : null;
+
+          if (gameData == null || gameData.isEmpty) {
+            return _buildErrorHistoryItem(theme, index);
+          }
+
           return _buildHistoryItem(gameData, theme, index);
         } catch (e) {
-          // Handle any errors by displaying a placeholder item
+          print('Error building history item $index: $e');
           return _buildErrorHistoryItem(theme, index);
         }
       },
@@ -125,41 +139,56 @@ class HistoryScreen extends StatelessWidget {
 
   Widget _buildHistoryItem(
       Map<String, dynamic> gameData, GameTheme theme, int index) {
-    // Safely parse date with fallback
     DateTime date;
     String formattedDate;
     try {
-      date = DateTime.parse(gameData['date'] ?? DateTime.now().toString());
+      String dateStr = gameData['date'] ?? DateTime.now().toString();
+      date = DateTime.parse(dateStr);
       formattedDate =
           '${date.day}/${date.month}/${date.year} ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
     } catch (e) {
+      print('Error parsing date: $e');
       formattedDate = 'Unknown date';
     }
 
     final result = gameData['result'] ?? 'Unknown';
     final gameMode = gameData['gameMode'] ?? 'Unknown';
-    final xScore = gameData['xScore'] ?? '0';
-    final oScore = gameData['oScore'] ?? '0';
 
-    Color resultColor;
-    IconData resultIcon;
+    int xScoreValue = 0, oScoreValue = 0;
+    try {
+      xScoreValue = int.tryParse(gameData['xScore'] ?? '0') ?? 0;
+      oScoreValue = int.tryParse(gameData['oScore'] ?? '0') ?? 0;
+    } catch (e) {
+      print('Error parsing scores: $e');
+    }
 
-    switch (result) {
-      case 'X Won':
-        resultColor = theme.xColor;
-        resultIcon = Icons.close;
-        break;
-      case 'O Won':
-        resultColor = theme.oColor;
-        resultIcon = Icons.circle_outlined;
-        break;
-      case 'Draw':
-        resultColor = theme.textColor;
-        resultIcon = Icons.balance;
-        break;
-      default:
-        resultColor = theme.textColor;
-        resultIcon = Icons.question_mark;
+    final xScore = xScoreValue.toString();
+    final oScore = oScoreValue.toString();
+
+    Color resultColor = theme.textColor;
+    IconData resultIcon = Icons.question_mark;
+
+    // Safely determine result appearance
+    try {
+      switch (result) {
+        case 'X Won':
+          resultColor = theme.xColor;
+          resultIcon = Icons.close;
+          break;
+        case 'O Won':
+          resultColor = theme.oColor;
+          resultIcon = Icons.circle_outlined;
+          break;
+        case 'Draw':
+          resultColor = theme.textColor;
+          resultIcon = Icons.balance;
+          break;
+        default:
+          resultColor = theme.textColor;
+          resultIcon = Icons.question_mark;
+      }
+    } catch (e) {
+      print('Error setting result appearance: $e');
     }
 
     return Card(
@@ -169,75 +198,78 @@ class HistoryScreen extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        leading: CircleAvatar(
-          backgroundColor: resultColor.withOpacity(0.2),
-          child: Icon(
-            resultIcon,
-            color: resultColor,
-          ),
-        ),
-        title: Text(
-          result,
-          style: theme.bodyStyle.copyWith(
-            fontWeight: FontWeight.bold,
-            color: resultColor,
-          ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text(
-              formattedDate,
-              style: theme.bodyStyle.copyWith(
-                fontSize: 12,
-                color: theme.textColor.withOpacity(0.7),
-              ),
+      child: SafeArea(
+        child: ListTile(
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          leading: CircleAvatar(
+            backgroundColor: resultColor.withOpacity(0.2),
+            child: Icon(
+              resultIcon,
+              color: resultColor,
             ),
-            const SizedBox(height: 2),
-            Row(
-              children: [
-                Icon(
-                  _getGameModeIcon(gameMode),
-                  size: 12,
-                  color: theme.textColor.withOpacity(0.5),
+          ),
+          title: Text(
+            result,
+            style: theme.bodyStyle.copyWith(
+              fontWeight: FontWeight.bold,
+              color: resultColor,
+            ),
+          ),
+          subtitle: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4),
+              Text(
+                formattedDate,
+                style: theme.bodyStyle.copyWith(
+                  fontSize: 12,
+                  color: theme.textColor.withOpacity(0.7),
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  _getGameModeLabel(gameMode),
-                  style: theme.bodyStyle.copyWith(
-                    fontSize: 12,
-                    color: theme.textColor.withOpacity(0.7),
+              ),
+              const SizedBox(height: 2),
+              Row(
+                children: [
+                  Icon(
+                    _getGameModeIcon(gameMode),
+                    size: 12,
+                    color: theme.textColor.withOpacity(0.5),
                   ),
+                  const SizedBox(width: 4),
+                  Text(
+                    _getGameModeLabel(gameMode),
+                    style: theme.bodyStyle.copyWith(
+                      fontSize: 12,
+                      color: theme.textColor.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          trailing: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text(
+                'X: $xScore',
+                style: theme.bodyStyle.copyWith(
+                  color: theme.xColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
                 ),
-              ],
-            ),
-          ],
-        ),
-        trailing: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              'X: $xScore',
-              style: theme.bodyStyle.copyWith(
-                color: theme.xColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'O: $oScore',
-              style: theme.bodyStyle.copyWith(
-                color: theme.oColor,
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+              const SizedBox(height: 4),
+              Text(
+                'O: $oScore',
+                style: theme.bodyStyle.copyWith(
+                  color: theme.oColor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

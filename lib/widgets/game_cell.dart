@@ -29,7 +29,16 @@ class GameCell extends StatelessWidget {
         size.width > size.height ? size.height * 0.15 : size.width * 0.2;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        try {
+          // Add safety check before executing onTap
+          if (onTap != null) {
+            onTap();
+          }
+        } catch (e) {
+          print('Error handling tap on cell [$row,$col]: $e');
+        }
+      },
       child: Container(
         decoration: theme.cellDecoration,
         child: Center(
@@ -42,14 +51,27 @@ class GameCell extends StatelessWidget {
 
   Widget _buildPlayerSymbol(Player player, GameTheme theme, double cellSize,
       PlayerSymbol symbolType) {
-    switch (player) {
-      case Player.X:
-        return _buildXSymbol(theme, cellSize, symbolType);
-      case Player.O:
-        return _buildOSymbol(theme, cellSize, symbolType);
-      case Player.none:
+    try {
+      // Add null check for player
+      if (player == null) {
         return const SizedBox.shrink();
+      }
+
+      switch (player) {
+        case Player.X:
+          return _buildXSymbol(theme, cellSize, symbolType);
+        case Player.O:
+          return _buildOSymbol(theme, cellSize, symbolType);
+        case Player.none:
+          return const SizedBox.shrink();
+      }
+    } catch (e) {
+      print('Error building player symbol: $e');
+      return const SizedBox.shrink();
     }
+
+    // Fallback return for safety
+    return const SizedBox.shrink();
   }
 
   Widget _buildXSymbol(

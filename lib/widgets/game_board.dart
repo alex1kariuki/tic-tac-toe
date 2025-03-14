@@ -232,23 +232,63 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   void _handleCellTap(GameProvider gameProvider, int row, int col) {
-    // If cell is already occupied or game is over, play error sound
-    if (gameProvider.gameModel.board[row][col] != Player.none ||
-        gameProvider.gameModel.gameState != GameState.playing) {
-      SoundUtils.playErrorSound(
+    try {
+      // Validate indices
+      if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+        print('Invalid cell indices: [$row,$col]');
+        SoundUtils.playErrorSound(
+          haptic: gameProvider.hapticEnabled,
+          soundEnabled: gameProvider.soundEnabled,
+        );
+        return;
+      }
+
+      // Check if gameModel is null
+      if (gameProvider.gameModel == null) {
+        print('Game model is null');
+        SoundUtils.playErrorSound(
+          haptic: gameProvider.hapticEnabled,
+          soundEnabled: gameProvider.soundEnabled,
+        );
+        return;
+      }
+
+      // Safely access board elements with null checking
+      final board = gameProvider.gameModel.board;
+      if (board == null || board.length <= row || board[row].length <= col) {
+        print('Invalid board configuration');
+        SoundUtils.playErrorSound(
+          haptic: gameProvider.hapticEnabled,
+          soundEnabled: gameProvider.soundEnabled,
+        );
+        return;
+      }
+
+      // If cell is already occupied or game is over, play error sound
+      if (board[row][col] != Player.none ||
+          gameProvider.gameModel.gameState != GameState.playing) {
+        SoundUtils.playErrorSound(
+          haptic: gameProvider.hapticEnabled,
+          soundEnabled: gameProvider.soundEnabled,
+        );
+        return;
+      }
+
+      // Play tap sound
+      SoundUtils.playTapSound(
         haptic: gameProvider.hapticEnabled,
         soundEnabled: gameProvider.soundEnabled,
       );
-      return;
+
+      // Make the move
+      gameProvider.makeMove(row, col);
+    } catch (e) {
+      print('Error handling cell tap: $e');
+      // Play error sound if something goes wrong
+      SoundUtils.playErrorSound(
+        haptic: gameProvider.hapticEnabled || false,
+        soundEnabled: gameProvider.soundEnabled || false,
+      );
     }
-
-    // Play tap sound
-    SoundUtils.playTapSound(
-      haptic: gameProvider.hapticEnabled,
-      soundEnabled: gameProvider.soundEnabled,
-    );
-
-    // Make the move
-    gameProvider.makeMove(row, col);
   }
 }
