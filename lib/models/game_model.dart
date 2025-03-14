@@ -82,8 +82,8 @@ class GameModel {
 
         // If playing against AI and it's AI's turn
         if (gameMode != GameMode.playerVsPlayer && currentPlayer == Player.O) {
-          // Use Future.delayed to prevent stack overflow and UI freezing
-          Future.delayed(Duration.zero, () {
+          // Use Future.delayed with a 1-second delay to make AI moves feel more natural
+          Future.delayed(const Duration(seconds: 1), () {
             makeAIMove();
           });
         }
