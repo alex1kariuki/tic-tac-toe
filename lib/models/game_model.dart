@@ -82,10 +82,8 @@ class GameModel {
 
         // If playing against AI and it's AI's turn
         if (gameMode != GameMode.playerVsPlayer && currentPlayer == Player.O) {
-          // Use Future.delayed with a 1-second delay to make AI moves feel more natural
-          Future.delayed(const Duration(seconds: 1), () {
-            makeAIMove();
-          });
+          // Directly call AI move with no delay
+          makeAIMove();
         }
       } else {
         // Update scores
@@ -205,7 +203,11 @@ class GameModel {
 
   // AI move logic
   void makeAIMove() {
-    if (gameState != GameState.playing || currentPlayer != Player.O) return;
+    // Double-check that conditions are right for AI to move
+    if (gameState != GameState.playing || currentPlayer != Player.O) {
+      print('AI move attempted in invalid state');
+      return;
+    }
 
     try {
       switch (gameMode) {
@@ -224,6 +226,8 @@ class GameModel {
           _makeSmartMove();
           break;
         default:
+          // Handle the case where gameMode is not an AI mode
+          print('Invalid game mode for AI move: $gameMode');
           break;
       }
     } catch (e) {
