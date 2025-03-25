@@ -6,7 +6,7 @@ class SoundUtils {
   static bool _assetsExist = false;
 
   // Sound effects
-  static const String _tapSound = 'lib/assets/tap.mp3';
+  static const String _tapSound = 'lib/assets/tap.wav';
   static const String _winSound = 'lib/assets/win.mp3';
   static const String _drawSound = 'lib/assets/draw.mp3';
   static const String _errorSound = 'lib/assets/error.mp3';

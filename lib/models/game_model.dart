@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:async';
 
 enum Player { X, O, none }
 
@@ -55,6 +56,11 @@ class GameModel {
 
   // Make a move
   bool makeMove(int row, int col) {
+    // Check for valid indices to prevent crashes
+    if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+      return false;
+    }
+
     // Check if the cell is empty and the game is still playing
     if (board[row][col] == Player.none && gameState == GameState.playing) {
       // Record move for history
@@ -76,6 +82,7 @@ class GameModel {
 
         // If playing against AI and it's AI's turn
         if (gameMode != GameMode.playerVsPlayer && currentPlayer == Player.O) {
+          // Directly call AI move with no delay
           makeAIMove();
         }
       } else {
@@ -196,25 +203,37 @@ class GameModel {
 
   // AI move logic
   void makeAIMove() {
-    if (gameState != GameState.playing || currentPlayer != Player.O) return;
+    // Double-check that conditions are right for AI to move
+    if (gameState != GameState.playing || currentPlayer != Player.O) {
+      print('AI move attempted in invalid state');
+      return;
+    }
 
-    switch (gameMode) {
-      case GameMode.easyAI:
-        _makeRandomMove();
-        break;
-      case GameMode.mediumAI:
-        // 50% chance of making a smart move, 50% random
-        if (Random().nextBool()) {
-          _makeSmartMove();
-        } else {
+    try {
+      switch (gameMode) {
+        case GameMode.easyAI:
           _makeRandomMove();
-        }
-        break;
-      case GameMode.hardAI:
-        _makeSmartMove();
-        break;
-      default:
-        break;
+          break;
+        case GameMode.mediumAI:
+          // 50% chance of making a smart move, 50% random
+          if (Random().nextBool()) {
+            _makeSmartMove();
+          } else {
+            _makeRandomMove();
+          }
+          break;
+        case GameMode.hardAI:
+          _makeSmartMove();
+          break;
+        default:
+          // Handle the case where gameMode is not an AI mode
+          print('Invalid game mode for AI move: $gameMode');
+          break;
+      }
+    } catch (e) {
+      print('Error in AI move: $e');
+      // Fallback to random move if there's an error
+      _makeRandomMove();
     }
   }
 
@@ -234,7 +253,24 @@ class GameModel {
     if (emptyCells.isNotEmpty) {
       final randomIndex = Random().nextInt(emptyCells.length);
       final randomMove = emptyCells[randomIndex];
-      makeMove(randomMove[0], randomMove[1]);
+      // Directly modify the board instead of calling makeMove to avoid recursion
+      board[randomMove[0]][randomMove[1]] = Player.O;
+      moveHistory.add({
+        'row': randomMove[0],
+        'col': randomMove[1],
+        'player': Player.O,
+      });
+
+      // Check game state after AI move
+      checkGameState();
+
+      // If game continues, switch back to player X
+      if (gameState == GameState.playing) {
+        currentPlayer = Player.X;
+      } else {
+        // Update scores if game ended
+        updateScores();
+      }
     }
   }
 
@@ -246,8 +282,16 @@ class GameModel {
         if (board[i][j] == Player.none) {
           board[i][j] = Player.O;
           if (_checkWin(Player.O)) {
-            board[i][j] = Player.none; // Reset for the actual move
-            makeMove(i, j);
+            // Just keep the move we made (no need to reset and call makeMove)
+            moveHistory.add({
+              'row': i,
+              'col': j,
+              'player': Player.O,
+            });
+
+            // Update game state
+            gameState = GameState.oWon;
+            updateScores();
             return;
           }
           board[i][j] = Player.none; // Reset for next check
@@ -261,8 +305,23 @@ class GameModel {
         if (board[i][j] == Player.none) {
           board[i][j] = Player.X;
           if (_checkWin(Player.X)) {
-            board[i][j] = Player.none; // Reset for the actual move
-            makeMove(i, j);
+            board[i][j] = Player.O; // Make AI's move directly
+            moveHistory.add({
+              'row': i,
+              'col': j,
+              'player': Player.O,
+            });
+
+            // Check game state after AI move
+            checkGameState();
+
+            // If game continues, switch back to player X
+            if (gameState == GameState.playing) {
+              currentPlayer = Player.X;
+            } else {
+              // Update scores if game ended
+              updateScores();
+            }
             return;
           }
           board[i][j] = Player.none; // Reset for next check
@@ -272,7 +331,23 @@ class GameModel {
 
     // Third, take center if available
     if (board[1][1] == Player.none) {
-      makeMove(1, 1);
+      board[1][1] = Player.O;
+      moveHistory.add({
+        'row': 1,
+        'col': 1,
+        'player': Player.O,
+      });
+
+      // Check game state after AI move
+      checkGameState();
+
+      // If game continues, switch back to player X
+      if (gameState == GameState.playing) {
+        currentPlayer = Player.X;
+      } else {
+        // Update scores if game ended
+        updateScores();
+      }
       return;
     }
 
@@ -294,7 +369,24 @@ class GameModel {
     if (availableCorners.isNotEmpty) {
       final randomCorner =
           availableCorners[Random().nextInt(availableCorners.length)];
-      makeMove(randomCorner[0], randomCorner[1]);
+
+      board[randomCorner[0]][randomCorner[1]] = Player.O;
+      moveHistory.add({
+        'row': randomCorner[0],
+        'col': randomCorner[1],
+        'player': Player.O,
+      });
+
+      // Check game state after AI move
+      checkGameState();
+
+      // If game continues, switch back to player X
+      if (gameState == GameState.playing) {
+        currentPlayer = Player.X;
+      } else {
+        // Update scores if game ended
+        updateScores();
+      }
       return;
     }
 
@@ -316,7 +408,24 @@ class GameModel {
     if (availableEdges.isNotEmpty) {
       final randomEdge =
           availableEdges[Random().nextInt(availableEdges.length)];
-      makeMove(randomEdge[0], randomEdge[1]);
+
+      board[randomEdge[0]][randomEdge[1]] = Player.O;
+      moveHistory.add({
+        'row': randomEdge[0],
+        'col': randomEdge[1],
+        'player': Player.O,
+      });
+
+      // Check game state after AI move
+      checkGameState();
+
+      // If game continues, switch back to player X
+      if (gameState == GameState.playing) {
+        currentPlayer = Player.X;
+      } else {
+        // Update scores if game ended
+        updateScores();
+      }
       return;
     }
 
