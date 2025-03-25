@@ -76,78 +76,52 @@ A modern, feature-rich Tic Tac Toe game built with Flutter for multiple platform
   </tr>
 </table>
 
-## Getting Started
+## Development
 
 ### Prerequisites
 
-- Flutter SDK (3.6.1 or higher)
-- For Android: Android Studio with an emulator or physical device
-- For iOS: Xcode with a simulator or physical device
-- For Web: Chrome or another supported browser
+- Flutter SDK (3.19.0 or later)
+- Android Studio / VS Code
+- Git
 
-### Installation
+### Setup
 
 1. Clone the repository
-```bash
-git clone https://github.com/alex1kariuki/tictactoe.git
-```
+2. Install dependencies:
+   ```bash
+   flutter pub get
+   ```
+3. Run the app:
+   ```bash
+   flutter run
+   ```
 
-2. Navigate to the project directory
-```bash
-cd tictactoe
-```
+## Deployment
 
-3. Install dependencies
-```bash
-flutter pub get
-```
+This app uses GitHub Actions for automated deployment to the Google Play Store.
 
-4. Run the app on your preferred platform
-```bash
-# For Android
-flutter run -d android
+### Setup Requirements
 
-# For iOS
-flutter run -d ios
+1. Google Play Console account
+2. Service account with Play Store API access
+3. GitHub repository secrets configured
 
-# For Web
-flutter run -d chrome
-```
+### Deployment Process
 
-## How to Play
+1. Push to the `main` branch to trigger automatic deployment
+2. Or manually trigger the workflow from the GitHub Actions tab
 
-1. **Choose your game mode**:
-   - Player vs Player: Play against a friend on the same device
-   - Easy AI: Play against a computer opponent that makes random moves
-   - Medium AI: Play against a computer opponent with moderate strategy
-   - Hard AI: Play against a computer opponent with advanced strategy
+The app will be deployed to the internal testing track on the Play Store.
 
-2. **Game Rules**:
-   - Players take turns placing their mark (X or O) on the 3x3 grid
-   - The first player to get three marks in a row (horizontally, vertically, or diagonally) wins
-   - If all cells are filled and no player has three in a row, the game ends in a draw
+### Manual Deployment
 
-3. **Controls**:
-   - Tap on any empty cell to place your mark
-   - Use the "Undo" button to revert the last move
-   - Use the "Reset" button to start a new game with the same settings
+To deploy manually:
 
-## Customization
-
-- **Themes**: Switch between different visual themes in the Settings tab
-- **Sound**: Toggle sound effects on/off
-- **Haptic Feedback**: Toggle haptic feedback on/off
-
-## Project Structure
-
-- `lib/models/`: Contains the game logic and state management
-- `lib/screens/`: Contains the main screens of the app
-- `lib/widgets/`: Contains reusable UI components
-- `lib/utils/`: Contains utility classes for themes, sounds, etc.
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+1. Build the release APK:
+   ```bash
+   flutter build apk --release
+   ```
+2. The APK will be in `build/app/outputs/flutter-apk/app-release.apk`
 
 ## License
 

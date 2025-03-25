@@ -26,8 +26,8 @@ android {
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        versionCode = 1
+        versionName = "1.0.0"
     }
 
     buildTypes {
@@ -41,4 +41,28 @@ android {
 
 flutter {
     source = "../.."
+}
+
+// Version management tasks
+task incrementVersionCode {
+    doLast {
+        def buildGradleFile = file("build.gradle")
+        def versionCodePattern = /versionCode\s+(\d+)/
+        def matcher = (buildGradleFile.text =~ versionCodePattern)
+        def currentVersionCode = matcher[0][1].toInteger()
+        def newVersionCode = currentVersionCode + 1
+        def newContent = buildGradleFile.text.replaceFirst(versionCodePattern, "versionCode $newVersionCode")
+        buildGradleFile.text = newContent
+    }
+}
+
+task updateVersionName {
+    doLast {
+        def buildGradleFile = file("build.gradle")
+        def versionNamePattern = /versionName\s+"([^"]+)"/
+        def matcher = (buildGradleFile.text =~ versionNamePattern)
+        def currentVersionName = matcher[0][1]
+        def newContent = buildGradleFile.text.replaceFirst(versionNamePattern, "versionName \"${project.findProperty('versionName') ?: currentVersionName}\"")
+        buildGradleFile.text = newContent
+    }
 }
